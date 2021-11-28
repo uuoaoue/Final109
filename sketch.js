@@ -49,7 +49,7 @@ function keyPressed() {
   }
 }
 function title() {
-  background(220,100,20);
+  background(220,100,200);
   textSize(80);
   textAlign(CENTER);
   text("MY GAME", w / 2, h / 5);
