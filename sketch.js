@@ -6,14 +6,19 @@ let points = 0;
 let w = 600;
 let h = 600;
 let player;
-let coin;
-
+let coins = [];
+let playerImg;
+let candyImg;
+function preload(){
+  playerImg = loadImage('assets/santa.png');
+    candyImg = loadImage('assets/candycane.png');
+}
 
 function setup() {
   cnv = createCanvas(w, h);
   textFont('Courier');
   player = new Player();
-  coin = new Coin();
+  coins[0] = new Coin();
 
 }
 
@@ -44,12 +49,15 @@ function keyPressed() {
     player.direction = 'up'
   } else if (keyCode == DOWN_ARROW) {
     player.direction = 'down'
-  }else if (keyCode == ' '){
+  } else if (key = ' ') {
     player.direction = 'still'
   }
 }
+function keyReleased(){
+  player.direction = ' still';
+}
 function title() {
-  background(220,100,200);
+  background(220, 100, 200);
   textSize(80);
   textAlign(CENTER);
   text("MY GAME", w / 2, h / 5);
@@ -66,17 +74,36 @@ function titleMouseClicked() {
 
 function level1() {
   background(50, 100, 200);
-  text('click for points', w / 2, h / 2);
+  if (random(1) <= 0.01) {
+    coins.push(new Coin());
+  }
   player.display();
   player.move();
-  coin.display();
-  coin.move();
+
+  for (let i = 0; i < coins.length; i++) {
+    coins[i].display();
+    coins[i].move();
+  }
+
+  // check collision
+  for (let i = coins.length - 1; i >= 0; i--) {
+    if (dist(player.x, player.y, coins[i].x, coins[i].y) <= (player.r + coins[i].r) / 2) {
+      points++;
+      console.log("points =" + points);
+      coins.splice(i, 1);
+    } else if(coins[i].y > h){
+      coins.splice(i,1);
+      console.log("bye");
+    }
+  }
+
+  text('Points:' + points, w / 6, h - 30);
 
 }
 
+
 function level1MouseClicked() {
   points++;
-  text('Points = ' + points);
   console.log("points =" + points);
   if (points >= 10) {
     state = 'you win'
