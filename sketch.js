@@ -6,20 +6,29 @@ let points = 0;
 let w = 600;
 let h = 600;
 let player;
-let coins = [];
+let sugarcanes = [];
+let monsters = [];
 let playerImg;
-let candyImg;
+let sugarCaneImg;
+let monsterImg;
+let bg;
+
 function preload(){
   playerImg = loadImage('assets/santa.png');
-    candyImg = loadImage('assets/candycane.png');
+  sugarCaneImg = loadImage('assets/candycane.png');
+  monsterImg = loadImage('assets/monster.png');
+  bg = loadImage('assets/background.png');
+
 }
 
 function setup() {
   cnv = createCanvas(w, h);
   textFont('Courier');
   player = new Player();
-  coins[0] = new Coin();
-
+  sugarcanes[0] = new sugarCane();
+  monsters [0]= new Monster();
+imageMode(CENTER);
+rectMode(CENTER);
 }
 
 function draw() {
@@ -36,6 +45,10 @@ function draw() {
       youWin();
       cnv.mouseClicked(youWinMouseClicked);
       break;
+      case 'gameover':
+      gameOver();
+      cnv.mouseClicked(gameOverMouseClicked);
+      break;
     default:
       break;
   }
@@ -45,19 +58,28 @@ function keyPressed() {
     player.direction = 'left'
   } else if (keyCode == RIGHT_ARROW) {
     player.direction = 'right'
-  } else if (keyCode == UP_ARROW) {
-    player.direction = 'up'
-  } else if (keyCode == DOWN_ARROW) {
-    player.direction = 'down'
   } else if (key = ' ') {
     player.direction = 'still'
   }
 }
 function keyReleased(){
-  player.direction = ' still';
+  let numberKeysPressed = 0;
+
+  if (keyIsDown(LEFT_ARROW)){
+    numberKeysPressed ++;
+
+  }
+  if (keyIsDown(RIGHT_ARROW)){
+    numberKeysPressed ++;
+  }
+  if (numberKeysPressed == 0){
+    player.direction = ' still';
+
+  }
 }
 function title() {
   background(220, 100, 200);
+
   textSize(80);
   textAlign(CENTER);
   text("MY GAME", w / 2, h / 5);
@@ -73,32 +95,55 @@ function titleMouseClicked() {
 }
 
 function level1() {
-  background(50, 100, 200);
+  background(bg);
+  imageMode(CORNER);
+
   if (random(1) <= 0.01) {
-    coins.push(new Coin());
+    sugarcanes.push(new sugarCane());
+  }
+  if (random(1) <= 0.015) {
+    monsters.push(new Monster());
   }
   player.display();
   player.move();
 
-  for (let i = 0; i < coins.length; i++) {
-    coins[i].display();
-    coins[i].move();
+  for (let i = 0; i < sugarcanes.length; i++) {
+    sugarcanes[i].display();
+    sugarcanes[i].move();
   }
-
-  // check collision
-  for (let i = coins.length - 1; i >= 0; i--) {
-    if (dist(player.x, player.y, coins[i].x, coins[i].y) <= (player.r + coins[i].r) / 2) {
+  for (let i = 0; i < monsters.length; i++) {
+    monsters[i].display();
+    monsters[i].move();
+  }
+  // check collision with sugar canes
+  for (let i = sugarcanes.length - 1; i >= 0; i--) {
+    if (dist(player.x, player.y, sugarcanes[i].x, sugarcanes[i].y) <= (player.r + sugarcanes[i].r) / 2) {
       points++;
       console.log("points =" + points);
-      coins.splice(i, 1);
-    } else if(coins[i].y > h){
-      coins.splice(i,1);
+      sugarcanes.splice(i, 1);
+    } else if(sugarcanes[i].y > h){
+      sugarcanes.splice(i,1);
       console.log("bye");
     }
   }
+    // check collision with monsters
+    for (let i = monsters.length - 1; i >= 0; i--) {
+      if (dist(player.x, player.y, monsters[i].x, monsters[i].y) <= (player.r + monsters[i].r) / 2) {
+        points--;
+        console.log("points =" + points);
+        monsters.splice(i, 1);
+      } else if(monsters[i].y > h){
+        monsters.splice(i,1);
+        console.log("bye");
+      }
+    }
 
   text('Points:' + points, w / 6, h - 30);
-
+ if (points >=10){
+   state = 'you win'; 
+ } else if (points <= -1){
+   state = 'gameover';
+ }
 }
 
 
@@ -121,6 +166,19 @@ function youWin() {
 }
 
 function youWinMouseClicked() {
-  state = 'level 1';
+  state = 'title';
+  points = 0;
+}
+function gameOver(){
+  background(100, 90, 100);
+  textSize(80);
+  text('Suckers', w / 2, h / 5);
+  textSize(30);
+  text("click anywhere to restart", w / 2, h / 2);
+
+}
+
+function gameOverMouseClicked(){
+  state = 'title';
   points = 0;
 }
