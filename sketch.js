@@ -8,15 +8,19 @@ let h = 600;
 let player;
 let sugarcanes = [];
 let monsters = [];
+let presents = [];
 let playerImg;
 let sugarCaneImg;
 let monsterImg;
+let presentImg;
 let bg;
 
 function preload(){
   playerImg = loadImage('assets/santa.png');
   sugarCaneImg = loadImage('assets/candycane.png');
   monsterImg = loadImage('assets/monster.png');
+  presentImg = loadImage('assets/present.png');
+
   bg = loadImage('assets/background.png');
 
 }
@@ -27,6 +31,8 @@ function setup() {
   player = new Player();
   sugarcanes[0] = new sugarCane();
   monsters [0]= new Monster();
+  presents[0] = new Present();
+
 imageMode(CENTER);
 rectMode(CENTER);
 }
@@ -98,11 +104,14 @@ function level1() {
   background(bg);
   imageMode(CORNER);
 
-  if (random(1) <= 0.01) {
+  if (random(1) <= 0.0012) {
     sugarcanes.push(new sugarCane());
   }
-  if (random(1) <= 0.015) {
+  if (random(1) <= 0.0015) {
     monsters.push(new Monster());
+  }
+  if (random(1) <= 0.0013) {
+    presents.push(new Present());
   }
   player.display();
   player.move();
@@ -115,6 +124,10 @@ function level1() {
     monsters[i].display();
     monsters[i].move();
   }
+  for (let i = 0; i < presents.length; i++) {
+    presents[i].display();
+    presents[i].move();
+  }
   // check collision with sugar canes
   for (let i = sugarcanes.length - 1; i >= 0; i--) {
     if (dist(player.x, player.y, sugarcanes[i].x, sugarcanes[i].y) <= (player.r + sugarcanes[i].r) / 2) {
@@ -123,6 +136,18 @@ function level1() {
       sugarcanes.splice(i, 1);
     } else if(sugarcanes[i].y > h){
       sugarcanes.splice(i,1);
+      console.log("bye");
+    }
+  }
+
+  // check collision with presents
+  for (let i = presents.length - 1; i >= 0; i--) {
+    if (dist(player.x, player.y, presents[i].x, presents[i].y) <= (player.r + presents[i].r) / 2) {
+      points++;
+      console.log("points =" + points);
+      presents.splice(i, 1);
+    } else if(presents[i].y > h){
+      presents.splice(i,1);
       console.log("bye");
     }
   }
