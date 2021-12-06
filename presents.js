@@ -1,11 +1,10 @@
 
 class Present{
-    constructor(){
-        this.r = 70;
-        this.x = random(w);
+    constructor(_size){
+        this.r = _size;
+        this.x =  random(0+ this.r, w-this.r);
         this.y = 0 - this.r;
-        this.speed = 2;
-
+        this.speed = 3;
     }
 
     display(){

@@ -3,38 +3,44 @@
 let state = "title";
 let cnv;
 let points = 0;
-let w = 600;
-let h = 600;
+let w;
+let h;
 let player;
+let lives = 5;
 let sugarcanes = [];
 let monsters = [];
 let presents = [];
 let playerImg;
+let liveObj;
+let liveImg;
 let sugarCaneImg;
 let monsterImg;
 let presentImg;
 let bg;
+let difficulty;
 
-function preload(){
+function preload() {
   playerImg = loadImage('assets/santa.png');
   sugarCaneImg = loadImage('assets/candycane.png');
   monsterImg = loadImage('assets/monster.png');
   presentImg = loadImage('assets/present.png');
-
+  liveImg = loadImage('assets/santa1.png');
   bg = loadImage('assets/background.png');
 
 }
 
 function setup() {
+  w = windowWidth
+  h = windowHeight
   cnv = createCanvas(w, h);
   textFont('Courier');
   player = new Player();
   sugarcanes[0] = new sugarCane();
-  monsters [0]= new Monster();
+  monsters[0] = new Monster();
   presents[0] = new Present();
-
-imageMode(CENTER);
-rectMode(CENTER);
+  angleMode(DEGREES); // Change the mode to DEGREES
+  imageMode(CENTER);
+  rectMode(CENTER);
 }
 
 function draw() {
@@ -43,15 +49,14 @@ function draw() {
       title();
       cnv.mouseClicked(titleMouseClicked);
       break;
-    case 'level 1':
-      level1();
-      cnv.mouseClicked(level1MouseClicked);
+    case 'game':
+      game();
       break;
     case 'you win':
       youWin();
       cnv.mouseClicked(youWinMouseClicked);
       break;
-      case 'gameover':
+    case 'gameover':
       gameOver();
       cnv.mouseClicked(gameOverMouseClicked);
       break;
@@ -68,17 +73,17 @@ function keyPressed() {
     player.direction = 'still'
   }
 }
-function keyReleased(){
+function keyReleased() {
   let numberKeysPressed = 0;
 
-  if (keyIsDown(LEFT_ARROW)){
-    numberKeysPressed ++;
+  if (keyIsDown(LEFT_ARROW)) {
+    numberKeysPressed++;
 
   }
-  if (keyIsDown(RIGHT_ARROW)){
-    numberKeysPressed ++;
+  if (keyIsDown(RIGHT_ARROW)) {
+    numberKeysPressed++;
   }
-  if (numberKeysPressed == 0){
+  if (numberKeysPressed == 0) {
     player.direction = ' still';
 
   }
@@ -95,23 +100,37 @@ function title() {
 }
 
 function titleMouseClicked() {
-  console.log("canvas is clicked ");
-  state = "level 1";
-
+  state = "game";
+  points = 0;
+  // reset all objects
+  sugarcanes = []
+  monsters = []
+  presents = []
+  lives = 5;
+  liveObj = new Lives(lives);
+  difficulty = 0.005;
 }
 
-function level1() {
+function computeDifficulty() {
+  if (points > 0 && points % 10 == 0) {
+    difficulty = (points / 10000) + 0.01;
+  }
+  console.log(difficulty)
+}
+
+
+function game() {
   background(bg);
   imageMode(CORNER);
-
-  if (random(1) <= 0.0012) {
-    sugarcanes.push(new sugarCane());
+  computeDifficulty()
+  if (random(1) <= difficulty) {
+    sugarcanes.push(new sugarCane(random(20, 100)));
   }
-  if (random(1) <= 0.0015) {
-    monsters.push(new Monster());
+  if (random(1) <= difficulty) {
+    monsters.push(new Monster(random(40, 70)));
   }
-  if (random(1) <= 0.0013) {
-    presents.push(new Present());
+  if (random(1) <= difficulty) {
+    presents.push(new Present(random(20, 70)));
   }
   player.display();
   player.move();
@@ -134,8 +153,8 @@ function level1() {
       points++;
       console.log("points =" + points);
       sugarcanes.splice(i, 1);
-    } else if(sugarcanes[i].y > h){
-      sugarcanes.splice(i,1);
+    } else if (sugarcanes[i].y > h) {
+      sugarcanes.splice(i, 1);
       console.log("bye");
     }
   }
@@ -146,64 +165,45 @@ function level1() {
       points++;
       console.log("points =" + points);
       presents.splice(i, 1);
-    } else if(presents[i].y > h){
-      presents.splice(i,1);
+    } else if (presents[i].y > h) {
+      presents.splice(i, 1);
       console.log("bye");
     }
   }
-    // check collision with monsters
-    for (let i = monsters.length - 1; i >= 0; i--) {
-      if (dist(player.x, player.y, monsters[i].x, monsters[i].y) <= (player.r + monsters[i].r) / 2) {
-        points--;
-        console.log("points =" + points);
-        monsters.splice(i, 1);
-      } else if(monsters[i].y > h){
-        monsters.splice(i,1);
-        console.log("bye");
-      }
+  // check collision with monsters
+  for (let i = monsters.length - 1; i >= 0; i--) {
+    if (dist(player.x, player.y, monsters[i].x, monsters[i].y) <= (player.r + monsters[i].r) / 2) {
+      lives--;
+      liveObj.loseLife()
+      console.log("lives =" + lives);
+      monsters.splice(i, 1);
+    } else if (monsters[i].y > h) {
+      monsters.splice(i, 1);
+      console.log("bye");
     }
+  }
 
   text('Points:' + points, w / 6, h - 30);
- if (points >=10){
-   state = 'you win'; 
- } else if (points <= -1){
-   state = 'gameover';
- }
-}
+  liveObj.display();
 
-
-function level1MouseClicked() {
-  points++;
-  console.log("points =" + points);
-  if (points >= 10) {
-    state = 'you win'
+  if (lives <= 0) {
+    state = 'gameover';
   }
 }
 
-function youWin() {
-  background(255, 90, 100);
-  textSize(80);
-  text('You Win', w / 2, h / 5);
-  textSize(30);
-  text("click anywhere to restart", w / 2, h / 2);
+function gameOver() {
 
-
-}
-
-function youWinMouseClicked() {
-  state = 'title';
-  points = 0;
-}
-function gameOver(){
   background(100, 90, 100);
   textSize(80);
-  text('Suckers', w / 2, h / 5);
+  //  game over
+  text('You score: ' + points  + ' points', w / 2, h / 5);
   textSize(30);
   text("click anywhere to restart", w / 2, h / 2);
 
 }
 
-function gameOverMouseClicked(){
+function gameOverMouseClicked() {
+
   state = 'title';
   points = 0;
 }
