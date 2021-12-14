@@ -24,7 +24,7 @@ export default class Pacman {
     this.powerDotActive = false;
     this.powerDotAboutToExpire = false;
     this.timers = [];
-
+// pacman & ghost do not move at the begining of the game until you make the first move
     this.madeFirstMove = false;
 
     document.addEventListener("keydown", this.#keydown);
