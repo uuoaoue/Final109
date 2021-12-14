@@ -1,10 +1,42 @@
+@import url("https://fonts.googleapis.com/css?family=Audiowide");
 html, body {
-  margin: 0;
-  padding: 0;
+  font-family: "Audiowide", 'Courier New', Courier, monospace;
+  margin: auto;
+  padding: 30px;
 }
-canvas {
-  display: block;
-margin: 50px auto 50px auto;
-border: 3px solid rgb(102, 121, 209);
 
+p.move-mid {
+  padding-left: 10%;
+  text-align: center;
+  margin: auto;
+  color: #9fb5ff;
 }
+#blocker {
+  position: absolute;
+  width: 100%;
+  height: 100%;}
+
+#instructions {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+#text-container{
+  color: rgb(255, 255, 255)
+}
+#text {
+  font-size: 16px;
+  line-height: 1.8;
+  word-spacing: 3px;
+  color: rgba(122, 46, 46, 0.644);}
+
+  .convertingColorsLinearGradient{ background-image: linear-gradient(0deg, rgba(168, 201, 221, 1) 35%, rgba(184, 197, 224, 1) 65%, rgba(202, 192, 220, 1) 100%); }

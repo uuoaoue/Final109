@@ -94,6 +94,7 @@ export default class Pacman {
 
     this.pacmanImageIndex = 0;
   }
+  // moving direction
   #keydown = (event) => {
     // up
     if (event.keyCode == 38) {

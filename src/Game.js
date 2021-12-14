@@ -50,21 +50,22 @@ function isGameOver(){
 function pause(){
     return !pacman.madeFirstMove || gameOver || gameWin;
 }
+// design game over display
 function drawGameEnd(){
     if (gameOver || gameWin){
-        let text = '   You Win!';
+        let text = '      You Win!';
         if (gameOver){
-            text = " Game Over";
+            text = "    Game Over ";
         }
         ctx.fillStyle="black";
-        ctx.fillRect(0,canvas.height/3.2, canvas.width, 100);
+        ctx.fillRect(0,canvas.height/2.5, canvas.width, 100);
         ctx.font = " 72px comic sans MS";
         const gradient = ctx.createLinearGradient( 0,0, canvas.width, 0);
         gradient.addColorStop('0', 'magenta');
-        gradient.addColorStop('0.5', 'pink')
-        gradient.addColorStop('1.0', 'yellow');
+        gradient.addColorStop('0.5', 'lightpink')
+        gradient.addColorStop('1.0', 'blue');
         ctx.fillStyle=gradient;
-        ctx.fillText(text, 10, canvas.height/2)
+        ctx.fillText(text, 10, canvas.height/1.9)
 
     }
 }
