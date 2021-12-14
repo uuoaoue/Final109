@@ -9,7 +9,7 @@ export default class Enemy {
     this.tileMap = tileMap;
 
     this.loadImages();
-
+// make the ghost move randomly
     this.movingDirection = Math.floor(
       Math.random() * Object.keys(MovingDirection).length
     );

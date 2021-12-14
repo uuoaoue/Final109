@@ -17,9 +17,9 @@ export default class Pacman {
     this.pacmanRotation = this.Rotation.right;
 
     // import sounds
-    this.wakaSound = new Audio("../assets/waka.wav");
-    this.powerDotSound = new Audio("../assets/power_dot.wav");
-    this.eatGhostSound = new Audio("../assets/eat_ghost.wav");
+    this.wakaSound = new Audio("./assets/waka.wav");
+    this.powerDotSound = new Audio("./assets/power_dot.wav");
+    this.eatGhostSound = new Audio("./assets/eat_ghost.wav");
 
     this.powerDotActive = false;
     this.powerDotAboutToExpire = false;
